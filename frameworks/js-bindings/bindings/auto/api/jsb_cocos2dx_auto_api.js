@@ -329,20 +329,6 @@ getFragmentShaderLog : function (
 },
 
 /**
- * @method initWithByteArrays
- * @param {char} arg0
- * @param {char} arg1
- * @return {bool}
- */
-initWithByteArrays : function (
-char, 
-char 
-)
-{
-    return false;
-},
-
-/**
  * @method bindAttribLocation
  * @param {char} arg0
  * @param {unsigned int} arg1
@@ -366,20 +352,6 @@ float,
 int 
 )
 {
-},
-
-/**
- * @method initWithFilenames
- * @param {String} arg0
- * @param {String} arg1
- * @return {bool}
- */
-initWithFilenames : function (
-str, 
-str 
-)
-{
-    return false;
 },
 
 /**
@@ -410,6 +382,34 @@ getVertexShaderLog : function (
 )
 {
     return ;
+},
+
+/**
+ * @method initWithByteArrays
+ * @param {char} arg0
+ * @param {char} arg1
+ * @return {bool}
+ */
+initWithByteArrays : function (
+char, 
+char 
+)
+{
+    return false;
+},
+
+/**
+ * @method initWithFilenames
+ * @param {String} arg0
+ * @param {String} arg1
+ * @return {bool}
+ */
+initWithFilenames : function (
+str, 
+str 
+)
+{
+    return false;
 },
 
 /**
@@ -487,15 +487,13 @@ char
 },
 
 /**
- * @method setUniformLocationWith1i
- * @param {int} arg0
- * @param {int} arg1
+ * @method link
+ * @return {bool}
  */
-setUniformLocationWith1i : function (
-int, 
-int 
+link : function (
 )
 {
+    return false;
 },
 
 /**
@@ -579,13 +577,15 @@ int
 },
 
 /**
- * @method link
- * @return {bool}
+ * @method setUniformLocationWith1i
+ * @param {int} arg0
+ * @param {int} arg1
  */
-link : function (
+setUniformLocationWith1i : function (
+int, 
+int 
 )
 {
-    return false;
 },
 
 /**
@@ -891,6 +891,26 @@ getMaxS : function (
 )
 {
     return 0;
+},
+
+/**
+ * @method updateWithData
+ * @param {void} arg0
+ * @param {int} arg1
+ * @param {int} arg2
+ * @param {int} arg3
+ * @param {int} arg4
+ * @return {bool}
+ */
+updateWithData : function (
+void, 
+int, 
+int, 
+int, 
+int 
+)
+{
+    return false;
 },
 
 /**
@@ -3115,11 +3135,13 @@ getDelayPerUnit : function (
  * @method initWithSpriteFrames
  * @param {Array} arg0
  * @param {float} arg1
+ * @param {unsigned int} arg2
  * @return {bool}
  */
 initWithSpriteFrames : function (
 array, 
-float 
+float, 
+int 
 )
 {
     return false;
@@ -4576,6 +4598,18 @@ ActionManager : function (
 cc.ActionEase = {
 
 /**
+ * @method initWithAction
+ * @param {cc.ActionInterval} arg0
+ * @return {bool}
+ */
+initWithAction : function (
+actioninterval 
+)
+{
+    return false;
+},
+
+/**
  * @method getInnerAction
  * @return {cc.ActionInterval}
  */
@@ -4600,6 +4634,20 @@ setRate : function (
 float 
 )
 {
+},
+
+/**
+ * @method initWithAction
+ * @param {cc.ActionInterval} arg0
+ * @param {float} arg1
+ * @return {bool}
+ */
+initWithAction : function (
+actioninterval, 
+float 
+)
+{
+    return false;
 },
 
 /**
@@ -4633,6 +4681,15 @@ float
     return cc.EaseIn;
 },
 
+/**
+ * @method EaseIn
+ * @constructor
+ */
+EaseIn : function (
+)
+{
+},
+
 };
 
 /**
@@ -4652,6 +4709,15 @@ float
 )
 {
     return cc.EaseOut;
+},
+
+/**
+ * @method EaseOut
+ * @constructor
+ */
+EaseOut : function (
+)
+{
 },
 
 };
@@ -4675,6 +4741,15 @@ float
     return cc.EaseInOut;
 },
 
+/**
+ * @method EaseInOut
+ * @constructor
+ */
+EaseInOut : function (
+)
+{
+},
+
 };
 
 /**
@@ -4692,6 +4767,15 @@ actioninterval
 )
 {
     return cc.EaseExponentialIn;
+},
+
+/**
+ * @method EaseExponentialIn
+ * @constructor
+ */
+EaseExponentialIn : function (
+)
+{
 },
 
 };
@@ -4713,6 +4797,15 @@ actioninterval
     return cc.EaseExponentialOut;
 },
 
+/**
+ * @method EaseExponentialOut
+ * @constructor
+ */
+EaseExponentialOut : function (
+)
+{
+},
+
 };
 
 /**
@@ -4730,6 +4823,15 @@ actioninterval
 )
 {
     return cc.EaseExponentialInOut;
+},
+
+/**
+ * @method EaseExponentialInOut
+ * @constructor
+ */
+EaseExponentialInOut : function (
+)
+{
 },
 
 };
@@ -4751,6 +4853,15 @@ actioninterval
     return cc.EaseSineIn;
 },
 
+/**
+ * @method EaseSineIn
+ * @constructor
+ */
+EaseSineIn : function (
+)
+{
+},
+
 };
 
 /**
@@ -4768,6 +4879,15 @@ actioninterval
 )
 {
     return cc.EaseSineOut;
+},
+
+/**
+ * @method EaseSineOut
+ * @constructor
+ */
+EaseSineOut : function (
+)
+{
 },
 
 };
@@ -4789,6 +4909,15 @@ actioninterval
     return cc.EaseSineInOut;
 },
 
+/**
+ * @method EaseSineInOut
+ * @constructor
+ */
+EaseSineInOut : function (
+)
+{
+},
+
 };
 
 /**
@@ -4804,6 +4933,20 @@ setPeriod : function (
 float 
 )
 {
+},
+
+/**
+ * @method initWithAction
+ * @param {cc.ActionInterval} arg0
+ * @param {float} arg1
+ * @return {bool}
+ */
+initWithAction : function (
+actioninterval, 
+float 
+)
+{
+    return false;
 },
 
 /**
@@ -4837,6 +4980,15 @@ float
     return cc.EaseElasticIn;
 },
 
+/**
+ * @method EaseElasticIn
+ * @constructor
+ */
+EaseElasticIn : function (
+)
+{
+},
+
 };
 
 /**
@@ -4858,6 +5010,15 @@ float
     return cc.EaseElasticOut;
 },
 
+/**
+ * @method EaseElasticOut
+ * @constructor
+ */
+EaseElasticOut : function (
+)
+{
+},
+
 };
 
 /**
@@ -4877,6 +5038,15 @@ float
 )
 {
     return cc.EaseElasticInOut;
+},
+
+/**
+ * @method EaseElasticInOut
+ * @constructor
+ */
+EaseElasticInOut : function (
+)
+{
 },
 
 };
@@ -4905,6 +5075,15 @@ actioninterval
     return cc.EaseBounceIn;
 },
 
+/**
+ * @method EaseBounceIn
+ * @constructor
+ */
+EaseBounceIn : function (
+)
+{
+},
+
 };
 
 /**
@@ -4922,6 +5101,15 @@ actioninterval
 )
 {
     return cc.EaseBounceOut;
+},
+
+/**
+ * @method EaseBounceOut
+ * @constructor
+ */
+EaseBounceOut : function (
+)
+{
 },
 
 };
@@ -4943,6 +5131,15 @@ actioninterval
     return cc.EaseBounceInOut;
 },
 
+/**
+ * @method EaseBounceInOut
+ * @constructor
+ */
+EaseBounceInOut : function (
+)
+{
+},
+
 };
 
 /**
@@ -4960,6 +5157,15 @@ actioninterval
 )
 {
     return cc.EaseBackIn;
+},
+
+/**
+ * @method EaseBackIn
+ * @constructor
+ */
+EaseBackIn : function (
+)
+{
 },
 
 };
@@ -4981,6 +5187,15 @@ actioninterval
     return cc.EaseBackOut;
 },
 
+/**
+ * @method EaseBackOut
+ * @constructor
+ */
+EaseBackOut : function (
+)
+{
+},
+
 };
 
 /**
@@ -4998,6 +5213,15 @@ actioninterval
 )
 {
     return cc.EaseBackInOut;
+},
+
+/**
+ * @method EaseBackInOut
+ * @constructor
+ */
+EaseBackInOut : function (
+)
+{
 },
 
 };
@@ -5035,6 +5259,15 @@ actioninterval
     return cc.EaseBezierAction;
 },
 
+/**
+ * @method EaseBezierAction
+ * @constructor
+ */
+EaseBezierAction : function (
+)
+{
+},
+
 };
 
 /**
@@ -5052,6 +5285,15 @@ actioninterval
 )
 {
     return cc.EaseQuadraticActionIn;
+},
+
+/**
+ * @method EaseQuadraticActionIn
+ * @constructor
+ */
+EaseQuadraticActionIn : function (
+)
+{
 },
 
 };
@@ -5073,6 +5315,15 @@ actioninterval
     return cc.EaseQuadraticActionOut;
 },
 
+/**
+ * @method EaseQuadraticActionOut
+ * @constructor
+ */
+EaseQuadraticActionOut : function (
+)
+{
+},
+
 };
 
 /**
@@ -5090,6 +5341,15 @@ actioninterval
 )
 {
     return cc.EaseQuadraticActionInOut;
+},
+
+/**
+ * @method EaseQuadraticActionInOut
+ * @constructor
+ */
+EaseQuadraticActionInOut : function (
+)
+{
 },
 
 };
@@ -5111,6 +5371,15 @@ actioninterval
     return cc.EaseQuarticActionIn;
 },
 
+/**
+ * @method EaseQuarticActionIn
+ * @constructor
+ */
+EaseQuarticActionIn : function (
+)
+{
+},
+
 };
 
 /**
@@ -5128,6 +5397,15 @@ actioninterval
 )
 {
     return cc.EaseQuarticActionOut;
+},
+
+/**
+ * @method EaseQuarticActionOut
+ * @constructor
+ */
+EaseQuarticActionOut : function (
+)
+{
 },
 
 };
@@ -5149,6 +5427,15 @@ actioninterval
     return cc.EaseQuarticActionInOut;
 },
 
+/**
+ * @method EaseQuarticActionInOut
+ * @constructor
+ */
+EaseQuarticActionInOut : function (
+)
+{
+},
+
 };
 
 /**
@@ -5166,6 +5453,15 @@ actioninterval
 )
 {
     return cc.EaseQuinticActionIn;
+},
+
+/**
+ * @method EaseQuinticActionIn
+ * @constructor
+ */
+EaseQuinticActionIn : function (
+)
+{
 },
 
 };
@@ -5187,6 +5483,15 @@ actioninterval
     return cc.EaseQuinticActionOut;
 },
 
+/**
+ * @method EaseQuinticActionOut
+ * @constructor
+ */
+EaseQuinticActionOut : function (
+)
+{
+},
+
 };
 
 /**
@@ -5204,6 +5509,15 @@ actioninterval
 )
 {
     return cc.EaseQuinticActionInOut;
+},
+
+/**
+ * @method EaseQuinticActionInOut
+ * @constructor
+ */
+EaseQuinticActionInOut : function (
+)
+{
 },
 
 };
@@ -5225,6 +5539,15 @@ actioninterval
     return cc.EaseCircleActionIn;
 },
 
+/**
+ * @method EaseCircleActionIn
+ * @constructor
+ */
+EaseCircleActionIn : function (
+)
+{
+},
+
 };
 
 /**
@@ -5242,6 +5565,15 @@ actioninterval
 )
 {
     return cc.EaseCircleActionOut;
+},
+
+/**
+ * @method EaseCircleActionOut
+ * @constructor
+ */
+EaseCircleActionOut : function (
+)
+{
 },
 
 };
@@ -5263,6 +5595,15 @@ actioninterval
     return cc.EaseCircleActionInOut;
 },
 
+/**
+ * @method EaseCircleActionInOut
+ * @constructor
+ */
+EaseCircleActionInOut : function (
+)
+{
+},
+
 };
 
 /**
@@ -5280,6 +5621,15 @@ actioninterval
 )
 {
     return cc.EaseCubicActionIn;
+},
+
+/**
+ * @method EaseCubicActionIn
+ * @constructor
+ */
+EaseCubicActionIn : function (
+)
+{
 },
 
 };
@@ -5301,6 +5651,15 @@ actioninterval
     return cc.EaseCubicActionOut;
 },
 
+/**
+ * @method EaseCubicActionOut
+ * @constructor
+ */
+EaseCubicActionOut : function (
+)
+{
+},
+
 };
 
 /**
@@ -5318,6 +5677,15 @@ actioninterval
 )
 {
     return cc.EaseCubicActionInOut;
+},
+
+/**
+ * @method EaseCubicActionInOut
+ * @constructor
+ */
+EaseCubicActionInOut : function (
+)
+{
 },
 
 };
@@ -14265,13 +14633,13 @@ getEndColorVar : function (
 },
 
 /**
- * @method getEndColor
- * @return {Color4FObject}
+ * @method getRotationIsDir
+ * @return {bool}
  */
-getEndColor : function (
+getRotationIsDir : function (
 )
 {
-    return cc.Color4F;
+    return false;
 },
 
 /**
@@ -14295,13 +14663,13 @@ getEmissionRate : function (
 },
 
 /**
- * @method getRotationIsDir
- * @return {bool}
+ * @method getEndColor
+ * @return {Color4FObject}
  */
-getRotationIsDir : function (
+getEndColor : function (
 )
 {
-    return false;
+    return cc.Color4F;
 },
 
 /**
@@ -15965,12 +16333,12 @@ bool
 
 /**
  * @method getColorSpaceHolder
- * @return {Color3BObject}
+ * @return {Color4BObject}
  */
 getColorSpaceHolder : function (
 )
 {
-    return cc.Color3B;
+    return cc.Color4B;
 },
 
 /**
@@ -15995,9 +16363,9 @@ float
 
 /**
  * @method setColorSpaceHolder
- * @param {Color3BObject} arg0
- */
-setColorSpaceHolder : function (
+* @param {Color4BObject|Color3BObject} color4b
+*/
+setColorSpaceHolder : function(
 color3b 
 )
 {
@@ -16115,6 +16483,18 @@ str
  * @method removeAllTextures
  */
 removeAllTextures : function (
+)
+{
+},
+
+/**
+ * @method addImageAsync
+ * @param {String} arg0
+ * @param {function} arg1
+ */
+addImageAsync : function (
+str, 
+func 
 )
 {
 },
@@ -18173,6 +18553,15 @@ create : function (
 )
 {
     return cc.ProtectedNode;
+},
+
+/**
+ * @method ProtectedNode
+ * @constructor
+ */
+ProtectedNode : function (
+)
+{
 },
 
 };
