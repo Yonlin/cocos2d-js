@@ -633,7 +633,7 @@ cc.textureCache.addImage = function(url, cb, target) {
     else
         return this._addImage(url);
 };
-cc.shaderCache = cc.ShaderCache.getInstance();
+//cc.shaderCache = cc.ShaderCache.getInstance();
 cc.animationCache = cc.AnimationCache.getInstance();
 cc.spriteFrameCache = cc.SpriteFrameCache.getInstance();
 //cc.saxParser
@@ -1104,6 +1104,7 @@ cc.game._initConfig();
 // JS to Native bridges
 if(cc.sys.os == cc.sys.OS_ANDROID){
     cc.reflection = new JavascriptJavaBridge();
+    cc.sys.capabilities["keyboard"] = true;
 }
 else if(cc.sys.os == cc.sys.OS_IOS){
     //TODO
