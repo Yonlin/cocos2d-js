@@ -32,7 +32,9 @@ Box2DTestLayer = cc.Layer.extend({
 
     ctor:function () {
 
-        window.sidebar && window.sidebar.changeTest(0, 2);
+        if(window.sidebar){
+            window.sidebar.changeTest(0, 2);
+        }
         //----start0----ctor
         this._super();
 
@@ -173,7 +175,7 @@ Box2DTestLayer = cc.Layer.extend({
                 var myActor = b.GetUserData();
                 myActor.x = b.GetPosition().x * PTM_RATIO;
                 myActor.y = b.GetPosition().y * PTM_RATIO;
-                myActor.rotation = -1 * cc.radiansToDegress(b.GetAngle());
+                myActor.rotation = -1 * cc.radiansToDegrees(b.GetAngle());
             }
         }
         //----end0----
