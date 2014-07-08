@@ -32,8 +32,9 @@ var winSize = null;
 var PLATFORM_JSB = 1 << 0;
 var PLATFORM_HTML5 = 1 << 1;
 var PLATFORM_HTML5_WEBGL = 1 << 2;
+var PLATFROM_ANDROID = 1 << 3;
 var PLATFORM_JSB_AND_WEBGL =  PLATFORM_JSB | PLATFORM_HTML5_WEBGL;
-var PLATFORM_ALL = PLATFORM_JSB | PLATFORM_HTML5 | PLATFORM_HTML5_WEBGL;
+var PLATFORM_ALL = PLATFORM_JSB | PLATFORM_HTML5 | PLATFORM_HTML5_WEBGL | PLATFROM_ANDROID;
 
 // automation vars
 var autoTestEnabled = autoTestEnabled || false;
@@ -53,7 +54,7 @@ var TestScene = cc.Scene.extend({
         menuItem.x = winSize.width - 50;
         menuItem.y = 25;
 
-        if(!window.sidebar){
+        if(!window.sideIndexBar){
             this.addChild(menu, 1);
         }
     },
@@ -127,7 +128,12 @@ var TestController = cc.LayerGradient.extend({
                     menuItem.setEnabled( testNames[i].platforms & PLATFORM_HTML5 );
                 }
             } else {
-                menuItem.setEnabled( testNames[i].platforms & PLATFORM_JSB );
+                if(cc.sys.os == cc.sys.OS_ANDROID)
+                {
+                    menuItem.setEnabled( testNames[i].platforms & ( PLATFORM_JSB | PLATFROM_ANDROID ) );
+                }else{
+                    menuItem.setEnabled( testNames[i].platforms & PLATFORM_JSB );
+                }
             }
         }
 
@@ -154,7 +160,7 @@ var TestController = cc.LayerGradient.extend({
             cc.eventManager.addListener({
                 event: cc.EventListener.MOUSE,
                 onMouseMove: function (event) {
-                    if(event.getButton() != undefined)
+                    if(event.getButton() == cc.EventMouse.BUTTON_LEFT)
                         event.getCurrentTarget().moveMenu(event.getDelta());
                 },
                 onMouseScroll: function (event) {
@@ -444,6 +450,13 @@ var testNames = [
         platforms: PLATFORM_ALL,
         testScene:function () {
             return new ProgressActionsTestScene();
+        }
+    },
+    {
+        title:"Reflection Test",
+        platforms: PLATFROM_ANDROID,
+        testScene:function () {
+            return new ReflectionTestScene();
         }
     },
     {

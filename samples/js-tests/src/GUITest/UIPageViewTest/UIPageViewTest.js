@@ -26,7 +26,7 @@
 var UIPageViewTest = UIScene.extend({
     init: function () {
         if (this._super()) {
-            var widgetSize = this._widget.getSize();
+            var widgetSize = this._widget.getContentSize();
             //init text
             this._topDisplayLabel.setString("Move by horizontal direction");
             this._topDisplayLabel.x = widgetSize.width / 2.0;
@@ -47,7 +47,7 @@ var UIPageViewTest = UIScene.extend({
             for (var i = 0; i < 3; ++i) {
                 var layout = ccui.Layout.create();
                 layout.setSize(cc.size(240, 130));
-                var layoutRect = layout.getSize();
+                var layoutRect = layout.getContentSize();
 
                 var imageView = ccui.ImageView.create();
                 imageView.setTouchEnabled(true);

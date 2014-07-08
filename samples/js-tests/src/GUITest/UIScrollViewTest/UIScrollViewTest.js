@@ -26,7 +26,7 @@
 var UIScrollViewTest_Vertical = UIScene.extend({
     init: function () {
         if (this._super()) {
-            var widgetSize = this._widget.getSize();
+            var widgetSize = this._widget.getContentSize();
             //init text
             this._topDisplayLabel.setString("Move by vertical direction");
             this._topDisplayLabel.x = widgetSize.width / 2.0;
@@ -67,7 +67,7 @@ var UIScrollViewTest_Vertical = UIScene.extend({
             textButton.loadTextures("res/cocosui/backtotopnormal.png", "res/cocosui/backtotoppressed.png", "");
             textButton.setTitleText("Text Button");
             textButton.x = innerWidth / 2;
-            textButton.y = button.getBottomInParent() - button.height;
+            textButton.y = button.getBottomBoundary() - button.height;
             scrollView.addChild(textButton);
 
             var button_scale9 = ccui.Button.create();
@@ -77,7 +77,7 @@ var UIScrollViewTest_Vertical = UIScene.extend({
             button_scale9.width = 100;
 	        button_scale9.height = 32;
             button_scale9.x = innerWidth / 2;
-            button_scale9.y = textButton.getBottomInParent() - textButton.height;
+            button_scale9.y = textButton.getBottomBoundary() - textButton.height;
             scrollView.addChild(button_scale9);
 
             imageView.x = innerWidth / 2;
@@ -93,7 +93,7 @@ var UIScrollViewTest_Vertical = UIScene.extend({
 var UIScrollViewTest_Horizontal = UIScene.extend({
     init: function () {
         if (this._super()) {
-            var widgetSize = this._widget.getSize();
+            var widgetSize = this._widget.getContentSize();
             //init text
             this._topDisplayLabel.setString("Move by horizontal direction");
             this._topDisplayLabel.x = widgetSize.width / 2.0;
@@ -109,7 +109,7 @@ var UIScrollViewTest_Horizontal = UIScene.extend({
             scrollView.setDirection(ccui.ScrollView.DIR_HORIZONTAL);
             scrollView.setTouchEnabled(true);
             scrollView.setSize(cc.size(280, 150));
-            var scrollViewRect = scrollView.getSize();
+            var scrollViewRect = scrollView.getContentSize();
             scrollView.setInnerContainerSize(cc.size(scrollViewRect.width,scrollViewRect.height));
 
             scrollView.x = (widgetSize.width - background.width) / 2 + (background.width - scrollViewRect.width) / 2;
@@ -119,7 +119,7 @@ var UIScrollViewTest_Horizontal = UIScene.extend({
             var imageView = ccui.ImageView.create();
             imageView.loadTexture("res/cocosui/ccicon.png");
 
-            var innerWidth = scrollViewRect.width + imageView.getSize().width;
+            var innerWidth = scrollViewRect.width + imageView.getContentSize().width;
             var innerHeight = scrollViewRect.height;
 
             scrollView.setInnerContainerSize(cc.size(innerWidth, innerHeight));
@@ -135,8 +135,8 @@ var UIScrollViewTest_Horizontal = UIScene.extend({
             textButton.setTouchEnabled(true);
             textButton.loadTextures("res/cocosui/backtotopnormal.png", "res/cocosui/backtotoppressed.png", "");
             textButton.setTitleText("Text Button");
-            textButton.x = button.getRightInParent() + button.width / 2;
-            textButton.y = button.getBottomInParent() - button.height;
+            textButton.x = button.getRightBoundary() + button.width / 2;
+            textButton.y = button.getBottomBoundary() - button.height;
             scrollView.addChild(textButton);
 
             var button_scale9 = ccui.Button.create();
@@ -145,12 +145,12 @@ var UIScrollViewTest_Horizontal = UIScene.extend({
             button_scale9.loadTextures("res/cocosui/button.png", "res/cocosui/buttonHighlighted.png", "");
             button_scale9.width = 100;
             button_scale9.height = 32;
-            button_scale9.x = textButton.getRightInParent() + textButton.width / 2;
-            button_scale9.y = textButton.getBottomInParent() - textButton.height;
+            button_scale9.x = textButton.getRightBoundary() + textButton.width / 2;
+            button_scale9.y = textButton.getBottomBoundary() - textButton.height;
             scrollView.addChild(button_scale9);
 
             imageView.x = innerWidth - imageView.width / 2;
-	        imageView.y = button_scale9.getBottomInParent() - button_scale9.height / 2;
+	        imageView.y = button_scale9.getBottomBoundary() - button_scale9.height / 2;
             scrollView.addChild(imageView);
 
             return true;
@@ -162,7 +162,7 @@ var UIScrollViewTest_Horizontal = UIScene.extend({
 var UIScrollViewTest_Both = UIScene.extend({
     init: function () {
         if (this._super()) {
-            var widgetSize = this._widget.getSize();
+            var widgetSize = this._widget.getContentSize();
             //init text
             this._topDisplayLabel.setString("Move by any direction");
             this._topDisplayLabel.x = widgetSize.width / 2.0;
@@ -181,7 +181,7 @@ var UIScrollViewTest_Both = UIScene.extend({
             scrollView.setBackGroundImageScale9Enabled(true);
             scrollView.setBackGroundImage("res/cocosui/green_edit.png");
             scrollView.setSize(cc.size(210, 122));
-            var scrollViewSize = scrollView.getSize();
+            var scrollViewSize = scrollView.getContentSize();
 
             scrollView.x = (widgetSize.width - background.width) / 2 + (background.width - scrollViewSize.width) / 2;
             scrollView.y = (widgetSize.height - background.height) / 2 + (background.height - scrollViewSize.height) / 2;
@@ -204,7 +204,7 @@ var UIScrollViewTest_Both = UIScene.extend({
 var UIScrollViewTest_ScrollToPercentBothDirection = UIScene.extend({
     init: function () {
         if (this._super()) {
-            var widgetSize = this._widget.getSize();
+            var widgetSize = this._widget.getContentSize();
             //init text
             this._topDisplayLabel.setString("");
             this._bottomDisplayLabel.setString("ScrollView scroll to percent both directrion");
@@ -221,7 +221,7 @@ var UIScrollViewTest_ScrollToPercentBothDirection = UIScene.extend({
             scrollView.setDirection(ccui.ScrollView.DIR_BOTH);
             scrollView.setInnerContainerSize(cc.size(480, 320));
             scrollView.setSize(cc.size(100, 100));
-            var scrollViewSize = scrollView.getSize();
+            var scrollViewSize = scrollView.getContentSize();
 
             scrollView.x = (widgetSize.width - background.width) / 2 + (background.width - scrollViewSize.width) / 2;
             scrollView.y = (widgetSize.height - background.height) / 2 + (background.height - scrollViewSize.height) / 2;
@@ -244,7 +244,7 @@ var UIScrollViewTest_ScrollToPercentBothDirection = UIScene.extend({
 var UIScrollViewTest_ScrollToPercentBothDirection_Bounce = UIScene.extend({
     init: function () {
         if (this._super()) {
-            var widgetSize = this._widget.getSize();
+            var widgetSize = this._widget.getContentSize();
             //init text
             this._topDisplayLabel.setString("");
             this._bottomDisplayLabel.setString("ScrollView scroll to percent both directrion bounce");
@@ -262,7 +262,7 @@ var UIScrollViewTest_ScrollToPercentBothDirection_Bounce = UIScene.extend({
             scrollView.setDirection(ccui.ScrollView.DIR_BOTH);
             scrollView.setInnerContainerSize(cc.size(480, 320));
             scrollView.setSize(cc.size(100, 100));
-            var scrollViewSize = scrollView.getSize();
+            var scrollViewSize = scrollView.getContentSize();
 
             scrollView.x = (widgetSize.width - background.width) / 2 + (background.width - scrollViewSize.width) / 2;
             scrollView.y = (widgetSize.height - background.height) / 2 + (background.height - scrollViewSize.height) / 2;

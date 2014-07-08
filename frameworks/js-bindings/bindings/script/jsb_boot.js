@@ -583,8 +583,22 @@ cc.defineGetterSetter(cc.loader, "audioPath", function(){
 //+++++++++++++++++++++++Define singleton objects begin+++++++++++++++++++++++++++
 
 // Define singleton objects
+/**
+ * @type {cc.Director}
+ * @name cc.director
+ */
 cc.director = cc.Director.getInstance();
+/**
+ * @type {cc.Size}
+ * @name cc.winSize
+ * cc.winSize is the alias object for the size of the current game window.
+ */
 cc.winSize = cc.director.getWinSize();
+/**
+ * @type {cc.EGLView}
+ * @name cc.view
+ * cc.view is the shared view object.
+ */
 cc.view = cc.director.getOpenGLView();
 cc.view.getDevicePixelRatio = function () {
     var sys = cc.sys;
@@ -617,12 +631,32 @@ cc.view.setContentTranslateLeftTop = function(){return;};
 cc.view.getContentTranslateLeftTop = function(){return null;};
 cc.view.setFrameZoomFactor = function(){return;};
 
+/**
+ * @type {Object}
+ * @name cc.eventManager
+ */
 cc.eventManager = cc.director.getEventDispatcher();
+/**
+ * @type {cc.AudioEngine}
+ * @name cc.audioEngine
+ * A simple Audio Engine engine API.
+ */
 cc.audioEngine = cc.AudioEngine.getInstance();
 cc.audioEngine.end = function(){
-    cc.AudioEngine.end();
+    this.stopMusic();
+    this.stopAllEffects();
 };
+/**
+ * @type {Object}
+ * @name cc.configuration
+ * cc.configuration contains some openGL variables
+ */
 cc.configuration = cc.Configuration.getInstance();
+/**
+ * @type {Object}
+ * @name cc.textureCache
+ * cc.textureCache is the global cache for cc.Texture2D
+ */
 cc.textureCache = cc.director.getTextureCache();
 cc.textureCache._addImage = cc.textureCache.addImage;
 cc.textureCache.addImage = function(url, cb, target) {
@@ -633,17 +667,40 @@ cc.textureCache.addImage = function(url, cb, target) {
     else
         return this._addImage(url);
 };
+/**
+ * @type {Object}
+ * @name cc.shaderCache
+ * cc.shaderCache is a singleton object that stores manages GL shaders
+ */
 cc.shaderCache = cc.ShaderCache.getInstance();
+/**
+ * @type {Object}
+ * @name cc.animationCache
+ */
 cc.animationCache = cc.AnimationCache.getInstance();
+/**
+ * @type {Object}
+ * @name cc.spriteFrameCache
+ */
 cc.spriteFrameCache = cc.SpriteFrameCache.getInstance();
-//cc.saxParser
+/**
+ * @type {cc.PlistParser}
+ * @name cc.plistParser
+ * A Plist Parser
+ */
 cc.plistParser = cc.PlistParser.getInstance();
 //cc.tiffReader;
 //cc.imeDispatcher;
 
-// File utils (only in JSB)
+// File utils (Temporary, won't be accessible)
 cc.fileUtils = cc.FileUtils.getInstance();
 
+/**
+ * @type {Object}
+ * @name cc.screen
+ * The fullscreen API provides an easy way for web content to be presented using the user's entire screen.
+ * It's invalid on safari,QQbrowser and android browser
+ */
 cc.screen = {
     init: function() {},
     fullScreen: function() {
@@ -660,39 +717,84 @@ cc.screen = {
     }
 };
 
-cc.reflection = {
-    callStaticMethod : function(){
-        cc.log("not supported on current platform");
-    }
-};
-
 // GUI
+/**
+ * @type {Object}
+ * UI Helper
+ */
 ccui.helper = ccui.Helper;
 
 // In extension
+/**
+ * @type {Object} Base object for ccs.uiReader
+ * @name ccs.uiReader
+ */
 ccs.uiReader = ccs.GUIReader.getInstance();
+/**
+ * @type {Object} Format and manage armature configuration and armature animation
+ * @name ccs.armatureDataManager
+ */
 ccs.armatureDataManager = ccs.ArmatureDataManager.getInstance();
+/**
+ * @type {Object} Base singleton object for ccs.ActionManager
+ * @name ccs.actionManager
+ */
 ccs.actionManager = ccs.ActionManager.getInstance();
+/**
+ * @type {Object} Base singleton object for ccs.sceneReader
+ * @name ccs.sceneReader
+ */
 ccs.sceneReader = ccs.SceneReader.getInstance();
-//ccs.spriteFrameCacheHelper = ccs.SpriteFrameCacheHelper.getInstance();
-//ccs.dataReaderHelper = ccs.DataReaderHelper.getInstance();
-
 ccs.sceneReader.clear = ccs.uiReader.clear = ccs.actionManager.clear = ccs.armatureDataManager.clear = function() {};
 ccs.sceneReader.version = function() {
     return ccs.SceneReader.sceneReaderVersion();
 };
+
+//ccs.spriteFrameCacheHelper = ccs.SpriteFrameCacheHelper.getInstance();
+//ccs.dataReaderHelper = ccs.DataReaderHelper.getInstance();
 
 //+++++++++++++++++++++++Define singleton objects end+++++++++++++++++++++++++++
 
 
 //+++++++++++++++++++++++++Redefine JSB only APIs+++++++++++++++++++++++++++
 
+/**
+ * @namespace jsb
+ * @name jsb
+ */
 var jsb = jsb || {};
+/**
+ * @type {Object}
+ * @name jsb.fileUtils
+ * jsb.fileUtils is the native file utils singleton object,
+ * please refer to Cocos2d-x API to know how to use it.
+ * Only available in JSB
+ */
 jsb.fileUtils = cc.fileUtils;
 delete cc.FileUtils;
 delete cc.fileUtils;
+/**
+ * @type {Object}
+ * @name jsb.AssetsManager
+ * jsb.AssetsManager is the native AssetsManager for your game resources or scripts.
+ * please refer to this document to know how to use it: http://www.cocos2d-x.org/docs/manual/framework/html5/v3/assets-manager/en
+ * Only available in JSB
+ */
 jsb.AssetsManager = cc.AssetsManager;
 delete cc.AssetsManager;
+
+/**
+ * @type {Object}
+ * @name jsb.reflection
+ * jsb.reflection is a bridge to let you invoke Java static functions.
+ * please refer to this document to know how to use it: http://www.cocos2d-x.org/docs/manual/framework/html5/v3/reflection/en
+ * Only available on Android platform
+ */
+jsb.reflection = {
+    callStaticMethod : function(){
+        cc.log("not supported on current platform");
+    }
+};
 
 //+++++++++++++++++++++++++Redefine JSB only APIs+++++++++++++++++++++++++++++
 
@@ -850,7 +952,38 @@ cc._initSys = function(config, CONFIG_KEY){
      * @type Boolean
      */
     locSys.isNative = true;
-    locSys.isMobile = __getPlatform() == "mobile";
+
+    /** Get the os of system */
+    locSys.os = __getOS();
+
+    // Forces the garbage collector
+    locSys.garbageCollect = function() {
+        __jsc__.garbageCollect();
+    };
+
+    // Dumps rooted objects
+    locSys.dumpRoot = function() {
+        __jsc__.dumpRoot();
+    };
+
+    // restarts the JS VM
+    locSys.restartVM = function() {
+        __restartVM();
+    };
+
+    locSys.dump = function(){
+        var self = this;
+        var str = "";
+        str += "isMobile : " + self.isMobile + "\r\n";
+        str += "language : " + self.language + "\r\n";
+        str += "browserType : " + self.browserType + "\r\n";
+        str += "capabilities : " + JSON.stringify(self.capabilities) + "\r\n";
+        str += "os : " + self.os + "\r\n";
+        cc.log(str);
+    }
+
+    locSys.isMobile = (locSys.os == locSys.OS_ANDROID || locSys.os == locSys.OS_IOS) ? true : false;
+
     locSys.language = (function(){
         var language = cc.Application.getInstance().getCurrentLanguage();
         switch(language){
@@ -884,35 +1017,6 @@ cc._initSys = function(config, CONFIG_KEY){
         capabilities["keyboard"] = true;
         capabilities["mouse"] = true;
     }
-
-    /** Get the os of system */
-    locSys.os = __getOS();
-
-    // Forces the garbage collector
-    locSys.garbageCollect = function() {
-        __jsc__.garbageCollect();
-    };
-
-    // Dumps rooted objects
-    locSys.dumpRoot = function() {
-        __jsc__.dumpRoot();
-    };
-
-    // restarts the JS VM
-    locSys.restartVM = function() {
-        __restartVM();
-    };
-
-    locSys.dump = function(){
-        var self = this;
-        var str = "";
-        str += "isMobile : " + self.isMobile + "\r\n";
-        str += "language : " + self.language + "\r\n";
-        str += "browserType : " + self.browserType + "\r\n";
-        str += "capabilities : " + JSON.stringify(self.capabilities) + "\r\n";
-        str += "os : " + self.os + "\r\n";
-        cc.log(str);
-    }
 };
 
 //+++++++++++++++++++++++++something about sys end+++++++++++++++++++++++++++++
@@ -945,6 +1049,8 @@ cc._initDebugSetting = function (mode) {
 //+++++++++++++++++++++++++something about CCGame begin+++++++++++++++++++++++++++
 
 /**
+ * @type {Object}
+ * @name cc.game
  * An object to boot the game.
  */
 cc.game = {
@@ -1118,7 +1224,7 @@ cc.game._initConfig();
 
 // JS to Native bridges
 if(cc.sys.os == cc.sys.OS_ANDROID){
-    cc.reflection = new JavascriptJavaBridge();
+    jsb.reflection = new JavascriptJavaBridge();
     cc.sys.capabilities["keyboard"] = true;
 }
 else if(cc.sys.os == cc.sys.OS_IOS){

@@ -103,15 +103,18 @@ var LayerTest1 = LayerTest.extend({
             cc.eventManager.addListener({
                 event: cc.EventListener.MOUSE,
                 onMouseMove: function(event){
-                    if(event.getButton() != undefined)
+                    if(event.getButton() == cc.EventMouse.BUTTON_LEFT)
                         event.getCurrentTarget().updateSize(event.getLocation());
                 }
             }, this);
 
         var s = director.getWinSize();
-        var layer = new cc.LayerColor(cc.color(255, 0, 0, 128), 200, 200);
+        var layer = new cc.LayerColor(cc.color(255, 0, 0, 128));
 
         layer.ignoreAnchor = false;
+        layer.anchorX = 0.5;
+        layer.anchorY = 0.5;
+        layer.setContentSize(200, 200);
         layer.x = s.width / 2;
         layer.y = s.height / 2;
         this.addChild(layer, 1, cc.TAG_LAYER);
@@ -470,7 +473,7 @@ var LayerGradient = LayerTest.extend({
                     event.getCurrentTarget().updateGradient(event.getLocation());
                 },
                 onMouseMove: function(event){
-                    if(event.getButton() != undefined)
+                    if(event.getButton() == cc.EventMouse.BUTTON_LEFT)
                         event.getCurrentTarget().updateGradient(event.getLocation());
                 }
             }, this);
@@ -557,8 +560,8 @@ var nextLayerTest = function () {
     layerTestSceneIdx++;
     layerTestSceneIdx = layerTestSceneIdx % arrayOfLayerTest.length;
 
-    if(window.sidebar){
-        layerTestSceneIdx = window.sidebar.changeTest(layerTestSceneIdx, 20);
+    if(window.sideIndexBar){
+        layerTestSceneIdx = window.sideIndexBar.changeTest(layerTestSceneIdx, 20);
     }
 
     return new arrayOfLayerTest[layerTestSceneIdx]();
@@ -568,8 +571,8 @@ var previousLayerTest = function () {
     if (layerTestSceneIdx < 0)
         layerTestSceneIdx += arrayOfLayerTest.length;
 
-    if(window.sidebar){
-        layerTestSceneIdx = window.sidebar.changeTest(layerTestSceneIdx, 20);
+    if(window.sideIndexBar){
+        layerTestSceneIdx = window.sideIndexBar.changeTest(layerTestSceneIdx, 20);
     }
 
     return new arrayOfLayerTest[layerTestSceneIdx]();

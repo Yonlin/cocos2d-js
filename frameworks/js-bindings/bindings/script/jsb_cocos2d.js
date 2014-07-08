@@ -24,7 +24,7 @@
 // cocos2d constants
 //
 
-cc.ENGINE_VERSION = "Cocos2d-JS-v3.0 alpha 2";
+cc.ENGINE_VERSION = "Cocos2d-JS v3.0 RC0";
 
 cc.TARGET_PLATFORM = {
     WINDOWS:0,
@@ -1403,6 +1403,19 @@ cc.base = function(me, opt_methodName, var_args) {
 };
 
 
+var ClassManager = {
+    id : (0|(Math.random()*998)),
+
+    instanceId : (0|(Math.random()*998)),
+
+    getNewID : function(){
+        return this.id++;
+    },
+
+    getNewInstanceId : function(){
+        return this.instanceId++;
+    }
+};
 //
 // 2) Using "extend" subclassing
 // Simple JavaScript Inheritance By John Resig http://ejohn.org/
@@ -1455,6 +1468,13 @@ cc.Class.extend = function (prop) {
             }
         }
     }
+
+    var classId = ClassManager.getNewID();
+    ClassManager[classId] = _super;
+    var desc = { writable: true, enumerable: false, configurable: true };
+    Class.id = classId;
+    desc.value = classId;
+    Object.defineProperty(prototype, '__pid', desc);
 
     // Populate our constructed prototype object
     Class.prototype = prototype;
@@ -1654,7 +1674,10 @@ cc.EventListener.create = function(argObj){
     }
 
     for(var key in argObj) {
-        listener[key] = argObj[key];
+        // Temporary fix for EventMouse to support getDelta functions (doesn't exist in Cocos2d-x)
+        if (key == "onMouseDown" || key == "onMouseMove")
+            listener["_" + key] = argObj[key];
+        else listener[key] = argObj[key];
     }
 
     return listener;
@@ -1683,7 +1706,7 @@ cc.eventManager.dispatchCustomEvent = function (eventName, optionalUserData) {
     var ev = new cc.EventCustom(eventName);
     ev.setUserData(optionalUserData);
     this.dispatchEvent(ev);
-}
+};
 
 cc.EventCustom.prototype.setUserData = function(userData) {
     this._userData = userData;
@@ -1725,8 +1748,62 @@ cc.EventListenerKeyboard.prototype.clone = function() {
     return ret;
 };
 
+cc.EventListenerMouse.prototype.clone = function() {
+    var ret = cc.EventListenerMouse.create();
+    ret._onMouseDown = this._onMouseDown;
+    ret._onMouseMove = this._onMouseMove;
+    ret.onMouseUp = this.onMouseUp;
+    ret.onMouseScroll = this.onMouseScroll;
+    return ret;
+};
+cc.EventListenerMouse.prototype.onMouseMove = function(event) {
+    if (!this._onMouseMove)
+        return;
+    event._listener = this;
+    this._onMouseMove(event);
+    this._previousX = event.getLocationX();
+    this._previousY = event.getLocationY();
+};
+cc.EventListenerMouse.prototype.onMouseDown = function(event) {
+    if (!this._onMouseDown)
+        return;
+    event._listener = this;
+    this._previousX = event.getLocationX();
+    this._previousY = event.getLocationY();
+    this._onMouseDown(event);
+};
+
 cc.EventMouse.prototype.getLocation = function(){
     return { x: this.getLocationX(), y: this.getLocationY() };
+};
+
+cc.EventMouse.prototype.getLocationInView = function() {
+    return {x: this.getLocationX(), y: cc.view.getDesignResolutionSize().height - this.getLocationY()};
+};
+
+// Temporary fix for EventMouse to support getDelta functions (doesn't exist in Cocos2d-x)
+cc.EventMouse.prototype.getDelta = function(){
+    if (isNaN(this._listener._previousX)) {
+        this._listener._previousX = this.getLocationX();
+        this._listener._previousY = this.getLocationY();
+    }
+    return { x: this.getLocationX() - this._listener._previousX, y: this.getLocationY() - this._listener._previousY };
+};
+
+cc.EventMouse.prototype.getDeltaX = function(){
+    if (isNaN(this._listener._previousX)) {
+        this._listener._previousX = this.getLocationX();
+        this._listener._previousY = this.getLocationY();
+    }
+    return this.getLocationX() - this._listener._previousX;
+};
+
+cc.EventMouse.prototype.getDeltaY = function(){
+    if (isNaN(this._listener._previousX)) {
+        this._listener._previousX = this.getLocationX();
+        this._listener._previousY = this.getLocationY();
+    }
+    return this.getLocationY() - this._listener._previousY;
 };
 
 cc.Touch.prototype.getLocationX = function(){
@@ -1736,8 +1813,6 @@ cc.Touch.prototype.getLocationX = function(){
 cc.Touch.prototype.getLocationY = function(){
     return this.getLocation().y;
 };
-
-cc.director = cc.Director.getInstance();
 
 cc.Director.EVENT_PROJECTION_CHANGED = "director_projection_changed";
 cc.Director.EVENT_AFTER_DRAW = "director_after_draw";
@@ -1754,104 +1829,58 @@ cc.Director.prototype.runScene = function(scene){
 };
 
 cc.visibleRect = {
-    _topLeft:cc.p(0,0),
-    _topRight:cc.p(0,0),
-    _top:cc.p(0,0),
-    _bottomLeft:cc.p(0,0),
-    _bottomRight:cc.p(0,0),
-    _bottom:cc.p(0,0),
-    _center:cc.p(0,0),
-    _left:cc.p(0,0),
-    _right:cc.p(0,0),
-    _width:0,
-    _height:0,
-    _isInitialized: false,
+    topLeft:cc.p(0,0),
+    topRight:cc.p(0,0),
+    top:cc.p(0,0),
+    bottomLeft:cc.p(0,0),
+    bottomRight:cc.p(0,0),
+    bottom:cc.p(0,0),
+    center:cc.p(0,0),
+    left:cc.p(0,0),
+    right:cc.p(0,0),
+    width:0,
+    height:0,
+
     init:function(){
-
-        var director = cc.Director.getInstance();
-        var origin = director.getVisibleOrigin();
-        var size = director.getVisibleSize();
-
-        this._width = size.width;
-        this._height = size.height;
-
-        var w = this._width;
-        var h = this._height;
+        var origin = cc.director.getVisibleOrigin();
+        var size = cc.director.getVisibleSize();
+        var w = this.width = size.width;
+        var h = this.height = size.height;
+        var l = origin.x,
+            b = origin.y,
+            t = b + h,
+            r = l + w;
 
         //top
-        this._topLeft.y = h;
-        this._topRight.x = w;
-        this._topRight.y = h;
-        this._top.x = w/2;
-        this._top.y = h;
+        this.topLeft.x = l;
+        this.topLeft.y = t;
+        this.topRight.x = r;
+        this.topRight.y = t;
+        this.top.x = l + w/2;
+        this.top.y = t;
 
         //bottom
-        this._bottomRight.x = w;
-        this._bottom.x = w/2;
+        this.bottomLeft.x = l;
+        this.bottomLeft.y = b;
+        this.bottomRight.x = r;
+        this.bottomRight.y = b;
+        this.bottom.x = l + w/2;
+        this.bottom.y = b;
 
         //center
-        this._center.x = w/2;
-        this._center.y = h/2;
+        this.center.x = l + w/2;
+        this.center.y = b + h/2;
 
         //left
-        this._left.y = h/2;
+        this.left.x = l;
+        this.left.y = b + h/2;
 
         //right
-        this._right.x = w;
-        this._right.y = h/2;
-    },
-    lazyInit: function(){
-        if (!this._isInitialized) {
-            this.init();
-            this._isInitialized = true;
-        }
+        this.right.x = r;
+        this.right.y = b + h/2;
     }
 };
-
-cc.defineGetterSetter(cc.visibleRect, "width", function(){
-    this.lazyInit();
-    return this._width;
-});
-cc.defineGetterSetter(cc.visibleRect, "height", function(){
-    this.lazyInit();
-    return this._height;
-});
-cc.defineGetterSetter(cc.visibleRect, "topLeft", function(){
-    this.lazyInit();
-    return this._topLeft;
-});
-cc.defineGetterSetter(cc.visibleRect, "topRight", function(){
-    this.lazyInit();
-    return this._topRight;
-});
-cc.defineGetterSetter(cc.visibleRect, "top", function(){
-    this.lazyInit();
-    return this._top;
-});
-cc.defineGetterSetter(cc.visibleRect, "bottomLeft", function(){
-    this.lazyInit();
-    return this._bottomLeft;
-});
-cc.defineGetterSetter(cc.visibleRect, "bottomRight", function(){
-    this.lazyInit();
-    return this._bottomRight;
-});
-cc.defineGetterSetter(cc.visibleRect, "bottom", function(){
-    this.lazyInit();
-    return this._bottom;
-});
-cc.defineGetterSetter(cc.visibleRect, "center", function(){
-    this.lazyInit();
-    return this._center;
-});
-cc.defineGetterSetter(cc.visibleRect, "left", function(){
-    this.lazyInit();
-    return this._left;
-});
-cc.defineGetterSetter(cc.visibleRect, "right", function(){
-    this.lazyInit();
-    return this._right;
-});
+cc.visibleRect.init();
 
 // Predefined font definition
 cc.FontDefinition = function () {
@@ -2170,7 +2199,6 @@ var templateSetBlendFunc = function(src, dst) {
         blendf = {src: src, dst: dst};
     this._setBlendFunc(blendf);
     var b = this.getBlendFunc();
-    cc.log((b.src == src) + ", " + (b.dst == dst));
 };
 for (var i = 0, l = protoHasBlend.length; i < l; i++) {
     var proto = protoHasBlend[i];
@@ -2201,7 +2229,24 @@ var easeActions = {
     easeBounceInOut : 14,
     easeBackIn : 15,
     easeBackOut : 16,
-    easeBackInOut : 17
+    easeBackInOut : 17,
+
+    easeBezierAction : 18,
+    easeQuadraticActionIn : 19,
+    easeQuadraticActionOut : 20,
+    easeQuadraticActionInOut : 21,
+    easeQuarticActionIn : 22,
+    easeQuarticActionOut : 23,
+    easeQuarticActionInOut : 24,
+    easeQuinticActionIn : 25,
+    easeQuinticActionOut : 26,
+    easeQuinticActionInOut : 27,
+    easeCircleActionIn : 28,
+    easeCircleActionOut : 29,
+    easeCircleActionInOut : 30,
+    easeCubicActionIn : 31,
+    easeCubicActionOut : 32,
+    easeCubicActionInOut : 33
 };
 
 function templateEaseActions(actionTag) {
@@ -2296,7 +2341,7 @@ cc.AffineTransform = function (a, b, c, d, tx, ty) {
  * @return {cc.AffineTransform}
  * Constructor
  */
-cc.AffineTransformMake = function (a, b, c, d, tx, ty) {
+cc.affineTransformMake = function (a, b, c, d, tx, ty) {
     return {a: a, b: b, c: c, d: d, tx: tx, ty: ty};
 };
 
@@ -2308,11 +2353,11 @@ cc.AffineTransformMake = function (a, b, c, d, tx, ty) {
  * @return {cc.Point}
  * Constructor
  */
-cc.PointApplyAffineTransform = function (point, t) {
+cc.pointApplyAffineTransform = function (point, t) {
     return {x: t.a * point.x + t.c * point.y + t.tx, y: t.b * point.x + t.d * point.y + t.ty};
 };
 
-cc._PointApplyAffineTransform = function (x, y, t) {
+cc._pointApplyAffineTransform = function (x, y, t) {
     return {x: t.a * x + t.c * y + t.tx,
         y: t.b * x + t.d * y + t.ty};
 };
@@ -2325,7 +2370,7 @@ cc._PointApplyAffineTransform = function (x, y, t) {
  * @return {cc.Size}
  * Constructor
  */
-cc.SizeApplyAffineTransform = function (size, t) {
+cc.sizeApplyAffineTransform = function (size, t) {
     return {width: t.a * size.width + t.c * size.height, height: t.b * size.width + t.d * size.height};
 };
 
@@ -2335,7 +2380,7 @@ cc.SizeApplyAffineTransform = function (size, t) {
  * @return {cc.AffineTransform}
  * Constructor
  */
-cc.AffineTransformMakeIdentity = function () {
+cc.affineTransformMakeIdentity = function () {
     return {a: 1.0, b: 0.0, c: 0.0, d: 1.0, tx: 0.0, ty: 0.0};
 };
 
@@ -2345,7 +2390,7 @@ cc.AffineTransformMakeIdentity = function () {
  * @return {cc.AffineTransform}
  * Constructor
  */
-cc.AffineTransformIdentity = function () {
+cc.affineTransformIdentity = function () {
     return {a: 1.0, b: 0.0, c: 0.0, d: 1.0, tx: 0.0, ty: 0.0};
 };
 
@@ -2357,7 +2402,7 @@ cc.AffineTransformIdentity = function () {
  * @return {cc.Rect}
  * Constructor
  */
-cc.RectApplyAffineTransform = function (rect, anAffineTransform) {
+cc.rectApplyAffineTransform = function (rect, anAffineTransform) {
     var top = cc.rectGetMinY(rect);
     var left = cc.rectGetMinX(rect);
     var right = cc.rectGetMaxX(rect);
@@ -2376,7 +2421,7 @@ cc.RectApplyAffineTransform = function (rect, anAffineTransform) {
     return cc.rect(minX, minY, (maxX - minX), (maxY - minY));
 };
 
-cc._RectApplyAffineTransformIn = function(rect, anAffineTransform){
+cc._rectApplyAffineTransformIn = function(rect, anAffineTransform){
     var top = cc.rectGetMinY(rect);
     var left = cc.rectGetMinX(rect);
     var right = cc.rectGetMaxX(rect);
@@ -2408,7 +2453,7 @@ cc._RectApplyAffineTransformIn = function(rect, anAffineTransform){
  * @return {cc.AffineTransform}
  * Constructor
  */
-cc.AffineTransformTranslate = function (t, tx, ty) {
+cc.affineTransformTranslate = function (t, tx, ty) {
     return {
         a: t.a,
         b: t.b,
@@ -2428,7 +2473,7 @@ cc.AffineTransformTranslate = function (t, tx, ty) {
  * @return {cc.AffineTransform}
  * Constructor
  */
-cc.AffineTransformScale = function (t, sx, sy) {
+cc.affineTransformScale = function (t, sx, sy) {
     return {a: t.a * sx, b: t.b * sx, c: t.c * sy, d: t.d * sy, tx: t.tx, ty: t.ty};
 };
 
@@ -2440,7 +2485,7 @@ cc.AffineTransformScale = function (t, sx, sy) {
  * @return {cc.AffineTransform}
  * Constructor
  */
-cc.AffineTransformRotate = function (aTransform, anAngle) {
+cc.affineTransformRotate = function (aTransform, anAngle) {
     var fSin = Math.sin(anAngle);
     var fCos = Math.cos(anAngle);
 
@@ -2462,7 +2507,7 @@ cc.AffineTransformRotate = function (aTransform, anAngle) {
  * @return {cc.AffineTransform}
  * Constructor
  */
-cc.AffineTransformConcat = function (t1, t2) {
+cc.affineTransformConcat = function (t1, t2) {
     return {a: t1.a * t2.a + t1.b * t2.c,                          //a
         b: t1.a * t2.b + t1.b * t2.d,                               //b
         c: t1.c * t2.a + t1.d * t2.c,                               //c
@@ -2480,7 +2525,7 @@ cc.AffineTransformConcat = function (t1, t2) {
  * @return {Boolean}
  * Constructor
  */
-cc.AffineTransformEqualToTransform = function (t1, t2) {
+cc.affineTransformEqualToTransform = function (t1, t2) {
     return ((t1.a === t2.a) && (t1.b === t2.b) && (t1.c === t2.c) && (t1.d === t2.d) && (t1.tx === t2.tx) && (t1.ty === t2.ty));
 };
 
@@ -2492,10 +2537,22 @@ cc.AffineTransformEqualToTransform = function (t1, t2) {
  * @return {cc.AffineTransform}
  * Constructor
  */
-cc.AffineTransformInvert = function (t) {
+cc.affineTransformInvert = function (t) {
     var determinant = 1 / (t.a * t.d - t.b * t.c);
     return {a: determinant * t.d, b: -determinant * t.b, c: -determinant * t.c, d: determinant * t.a,
         tx: determinant * (t.c * t.ty - t.d * t.tx), ty: determinant * (t.b * t.tx - t.a * t.ty)};
+};
+
+
+//
+// Node API
+//
+
+cc.Node.prototype.setUserData = function (data) {
+    this.userData = data;
+};
+cc.Node.prototype.getUserData = function () {
+    return this.userData;
 };
 
 /** returns a "world" axis aligned bounding box of the node. <br/>
@@ -2505,7 +2562,7 @@ cc.Node.prototype.getBoundingBoxToWorld = function () {
     var contentSize = this.getContentSize();
     var rect = cc.rect(0, 0, contentSize.width, contentSize.height);
     var matrix = this.getNodeToWorldTransform();
-    var trans = cc.AffineTransformMake(matrix[0], matrix[4], matrix[1], matrix[5], matrix[12], matrix[13]);  
+    var trans = cc.AffineTransformMake(matrix[0], matrix[1], matrix[4], matrix[5], matrix[12], matrix[13]);  
     rect = cc.RectApplyAffineTransform(rect, trans);
 
     //query child's BoundingBox

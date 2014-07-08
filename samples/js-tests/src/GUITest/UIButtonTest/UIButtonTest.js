@@ -30,7 +30,7 @@ var UIButtonTest = UIScene.extend({
             this._topDisplayLabel.setString("No Event");
             this._bottomDisplayLabel.setString("Button");
 
-            var widgetSize = this._widget.getSize();
+            var widgetSize = this._widget.getContentSize();
             // Create the button
             var button = ccui.Button.create();
             button.setTouchEnabled(true);
@@ -119,7 +119,7 @@ var UIButtonTest_PressedAction = UIScene.extend({
             this._topDisplayLabel.setString("No Event");
             this._bottomDisplayLabel.setString("Button Pressed Action");
 
-            var widgetSize = this._widget.getSize();
+            var widgetSize = this._widget.getContentSize();
             // Create the button
             var button = ccui.Button.create();
             button.setTouchEnabled(true);
@@ -157,7 +157,7 @@ var UIButtonTest_PressedAction = UIScene.extend({
 var UIButtonTest_Title = UIScene.extend({
     init: function () {
         if (this._super()) {
-            var widgetSize = this._widget.getSize();
+            var widgetSize = this._widget.getContentSize();
             //init text
             this._topDisplayLabel.setString("No Event");
             this._bottomDisplayLabel.setString("Button with title");

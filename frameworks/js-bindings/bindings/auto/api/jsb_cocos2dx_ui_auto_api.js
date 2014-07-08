@@ -227,13 +227,13 @@ getCustomSize : function (
 },
 
 /**
- * @method getLeftBoundary
- * @return {float}
+ * @method setFlippedY
+ * @param {bool} arg0
  */
-getLeftBoundary : function (
+setFlippedY : function (
+bool 
 )
 {
-    return 0;
 },
 
 /**
@@ -267,13 +267,13 @@ getVirtualRenderer : function (
 },
 
 /**
- * @method getSize
- * @return {size_object}
+ * @method getSizePercent
+ * @return {vec2_object}
  */
-getSize : function (
+getSizePercent : function (
 )
 {
-    return cc.Size;
+    return cc.Vec2;
 },
 
 /**
@@ -314,16 +314,6 @@ setPositionType : function (
 positiontype 
 )
 {
-},
-
-/**
- * @method getName
- * @return {String}
- */
-getName : function (
-)
-{
-    return ;
 },
 
 /**
@@ -401,15 +391,13 @@ getTopBoundary : function (
 },
 
 /**
- * @method getChildByName
- * @param {String} arg0
- * @return {ccui.Widget}
+ * @method ignoreContentAdaptWithSize
+ * @param {bool} arg0
  */
-getChildByName : function (
-str 
+ignoreContentAdaptWithSize : function (
+bool 
 )
 {
-    return ccui.Widget;
 },
 
 /**
@@ -503,13 +491,13 @@ bool
 },
 
 /**
- * @method setFlippedY
- * @param {bool} arg0
+ * @method getLeftBoundary
+ * @return {float}
  */
-setFlippedY : function (
-bool 
+getLeftBoundary : function (
 )
 {
+    return 0;
 },
 
 /**
@@ -538,16 +526,6 @@ getRightBoundary : function (
  */
 setBrightStyle : function (
 brightstyle 
-)
-{
-},
-
-/**
- * @method setName
- * @param {String} arg0
- */
-setName : function (
-str 
 )
 {
 },
@@ -631,16 +609,6 @@ size
 },
 
 /**
- * @method getSizePercent
- * @return {vec2_object}
- */
-getSizePercent : function (
-)
-{
-    return cc.Vec2;
-},
-
-/**
  * @method onFocusChange
  * @param {ccui.Widget} arg0
  * @param {ccui.Widget} arg1
@@ -670,16 +638,6 @@ getSizeType : function (
 )
 {
     return 0;
-},
-
-/**
- * @method ignoreContentAdaptWithSize
- * @param {bool} arg0
- */
-ignoreContentAdaptWithSize : function (
-bool 
-)
-{
 },
 
 /**
@@ -778,16 +736,6 @@ sizetype
 dispatchFocusEvent : function (
 widget, 
 widget 
-)
-{
-},
-
-/**
- * @method setSize
- * @param {size_object} arg0
- */
-setSize : function (
-size 
 )
 {
 },
@@ -3976,6 +3924,126 @@ create : function (
  * @constructor
  */
 RichText : function (
+)
+{
+},
+
+};
+
+/**
+ * @class HBox
+ */
+ccui.HBox = {
+
+/**
+ * @method initWithSize
+ * @param {size_object} arg0
+ * @return {bool}
+ */
+initWithSize : function (
+size 
+)
+{
+    return false;
+},
+
+/**
+ * @method create
+* @param {size_object} size
+* @return {ccui.HBox|ccui.HBox}
+*/
+create : function(
+size 
+)
+{
+    return ccui.HBox;
+},
+
+/**
+ * @method HBox
+ * @constructor
+ */
+HBox : function (
+)
+{
+},
+
+};
+
+/**
+ * @class VBox
+ */
+ccui.VBox = {
+
+/**
+ * @method initWithSize
+ * @param {size_object} arg0
+ * @return {bool}
+ */
+initWithSize : function (
+size 
+)
+{
+    return false;
+},
+
+/**
+ * @method create
+* @param {size_object} size
+* @return {ccui.VBox|ccui.VBox}
+*/
+create : function(
+size 
+)
+{
+    return ccui.VBox;
+},
+
+/**
+ * @method VBox
+ * @constructor
+ */
+VBox : function (
+)
+{
+},
+
+};
+
+/**
+ * @class RelativeBox
+ */
+ccui.RelativeBox = {
+
+/**
+ * @method initWithSize
+ * @param {size_object} arg0
+ * @return {bool}
+ */
+initWithSize : function (
+size 
+)
+{
+    return false;
+},
+
+/**
+ * @method create
+* @param {size_object} size
+* @return {ccui.RelativeBox|ccui.RelativeBox}
+*/
+create : function(
+size 
+)
+{
+    return ccui.RelativeBox;
+},
+
+/**
+ * @method RelativeBox
+ * @constructor
+ */
+RelativeBox : function (
 )
 {
 },
